@@ -1,6 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
-
 using UrlShortener.Contracts.Dtos;
 using UrlShortener.Core.Entities;
 using UrlShortener.Core.Interfaces;
