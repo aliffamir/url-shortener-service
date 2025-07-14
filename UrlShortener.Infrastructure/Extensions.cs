@@ -11,7 +11,7 @@ public static class InfrastructureExtensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<AppDbContext>(options =>
-             options.UseNpgsql(configuration.GetConnectionString("PostgresConnection"))
+             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
         )
         .AddScoped<IShortUrlRepository, EfShortUrlRepository>();
 

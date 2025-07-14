@@ -1,18 +1,40 @@
+using Microsoft.EntityFrameworkCore;
 
 using UrlShortener.Core.Entities;
 using UrlShortener.Core.Interfaces;
-
+using UrlShortener.Infrastructure.Data;
 namespace UrlShortener.Infrastructure.Repositories;
 
 public class EfShortUrlRepository : IShortUrlRepository
 {
-    public Task<ShortenedUrl?> CreateAsync(ShortenedUrl shortenedUrl)
+    private readonly AppDbContext _context;
+    public EfShortUrlRepository(AppDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
-    public Task<ShortenedUrl?> GetByKeyAsync(string key)
+    public async Task<ShortenedUrl?> CreateAsync(ShortenedUrl shortenedUrl)
     {
-        throw new NotImplementedException();
+        _context.ShortenedUrls.Add(shortenedUrl);
+        await _context.SaveChangesAsync();
+
+        return shortenedUrl;
+    }
+
+    public async Task<ShortenedUrl?> GetByKeyAsync(string key)
+    {
+        var shortUrl = await _context.ShortenedUrls
+            .AsNoTracking()
+            .SingleOrDefaultAsync(url => url.Key == key);
+
+
+        return (shortUrl is null) ? null : shortUrl;
+    }
+
+    public async Task<bool> KeyExists(string key)
+    {
+        return await _context.ShortenedUrls
+            .AsNoTracking()
+            .AnyAsync(url => url.Key == key);
     }
 }
