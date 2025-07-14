@@ -1,7 +1,7 @@
 using UrlShortener.Contracts.Dtos;
 using UrlShortener.Core.Entities;
 
-namespace UrlShortener.Contracts.Mappers;
+namespace UrlShortener.Api.Mappers;
 
 public static class ShortUrlMapping
 {
