@@ -2,7 +2,7 @@ namespace UrlShortener.Core.Entities;
 
 public class ShortenedUrl
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     public required string LongUrl { get; set; }
     public required string ShortUrl { get; set; }
     // TODO: maybe make this the pk for more efficient querying
