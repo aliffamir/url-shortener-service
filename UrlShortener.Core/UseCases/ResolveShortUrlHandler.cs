@@ -1,6 +1,8 @@
 using UrlShortener.Core.Entities;
 using UrlShortener.Core.Interfaces;
 
+namespace UrlShortener.Core.UseCases;
+
 public class ResolveShortUrlHandler
 {
     private readonly IShortUrlRepository _shortUrlRepository;
