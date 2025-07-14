@@ -15,10 +15,10 @@ public class CreateShortUrlHandler
     }
 
     // TODO: refactor using Result pattern
-    public async Task<ShortenedUrl> HandleAsync(CreateShortUrlRequest shortUrlRequest, string domainName)
+    public async Task<ShortenedUrl> HandleAsync(CreateShortUrlRequest shortUrlRequest)
     {
         var shortKey = UrlShortenerHelper.GenerateShortKey(shortUrlRequest.LongUrl);
-        string shortUrl = $"{domainName}/{shortKey}";
+        string shortUrl = $"{shortUrlRequest.Domain}/{shortKey}";
 
         var shortUrlEntity = new ShortenedUrl
         {
