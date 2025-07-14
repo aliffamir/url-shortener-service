@@ -1,29 +1,41 @@
+using System.Security.Cryptography;
+using System.Text;
+
 namespace UrlShortener.Core.Helpers;
 
-public class UrlShortenerHelper {
+public static class UrlShortenerHelper
+{
     private static readonly string Alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    public static readonly int Base = Alphabet.Length;
+    private static readonly int Base = Alphabet.Length;
 
-    public static string Encode(int i) {
-        if (i == 0) return Alphabet[0].ToString();
+    public static string GenerateShortKey(string longUrl)
+    {
+        const int shortKeyLength = 4;
 
-        var s = string.Empty;
+        byte[] hash = MD5.HashData(Encoding.UTF8.GetBytes(longUrl));
+        byte[] hashPrefix = hash[..shortKeyLength];
 
-        while (i > 0) {
-            s += Alphabet[i % Base];
-            i /= Base;
-        }
+        if (BitConverter.IsLittleEndian) Array.Reverse(hashPrefix);
 
-        return string.Join(string.Empty, s.Reverse());
+        int value = BitConverter.ToInt32(hashPrefix);
+
+        return EncodeToBase62(value);
     }
 
-    public static int Decode(string s) {
-        var i = 0;
+    public static string EncodeToBase62(int value)
+    {
+        if (value < 0) value = ~value; // ensure positive if hash yields negative number
 
-        foreach (var c in s) {
-            i = (i * Base) + Alphabet.IndexOf(c);
+        if (value == 0)
+            return Alphabet[0].ToString();
+
+        var sb = new StringBuilder();
+        while (value > 0)
+        {
+            sb.Insert(0, Alphabet[value % Base]);
+            value /= Base;
         }
 
-        return i;
+        return sb.ToString();
     }
 }
