@@ -12,11 +12,14 @@ public static class UrlShortenerEndpoints
         var group = routes.MapGroup("/");
 
         // POST /shorten
-        group.MapPost("shorten", async (CreateShortUrlRequest request, [FromServices] CreateShortUrlHandler handler, HttpContext context) =>
+        group.MapPost("shorten", async (CreateShortUrlDto dto, [FromServices] CreateShortUrlHandler handler, HttpContext context) =>
         {
             string domain = context.Request.Host.Value!;
-            var response = await handler.HandleAsync(request with { Domain = domain });
+            var request = new CreateShortUrlRequest(dto.LongUrl, domain, dto.ExpiresAt);
 
+            var response = await handler.HandleAsync(request);
+
+            // TODO: using result pattern, can return bad request
             return response is null ? Results.InternalServerError() : Results.Ok(response);
         });
 
