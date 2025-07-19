@@ -18,7 +18,8 @@ public class CreateShortUrlHandler
     public async Task<ShortenedUrl?> HandleAsync(CreateShortUrlRequest shortUrlRequest)
     {
         var expiresAtUtc = shortUrlRequest.ExpiresAt.UtcDateTime;
-        if (expiresAtUtc <= DateTime.UtcNow) {
+        if (expiresAtUtc <= DateTime.UtcNow)
+        {
             return null;
         }
 
@@ -30,6 +31,7 @@ public class CreateShortUrlHandler
             LongUrl = shortUrlRequest.LongUrl,
             Key = shortKey,
             ShortUrl = shortUrl,
+            CreatedAt = DateTimeOffset.UtcNow,
             ExpiresAt = expiresAtUtc,
         };
 
