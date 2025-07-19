@@ -16,6 +16,17 @@ public class ResolveShortUrlHandler
     {
         var shortUrl = await _shortUrlRepository.GetByKeyAsync(key);
 
-        return shortUrl is null ? null : shortUrl;
+        if (shortUrl is null)
+        {
+            return null;
+        }
+
+        if (shortUrl.ExpiresAt.UtcDateTime <= DateTimeOffset.UtcNow)
+        {
+            await _shortUrlRepository.DeleteAsync(shortUrl.Id);
+            return null;
+        }
+
+        return shortUrl;
     }
 }

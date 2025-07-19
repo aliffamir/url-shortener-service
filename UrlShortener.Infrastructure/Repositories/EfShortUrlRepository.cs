@@ -21,6 +21,21 @@ public class EfShortUrlRepository : IShortUrlRepository
         return shortenedUrl;
     }
 
+    public async Task<ShortenedUrl?> DeleteAsync(int id)
+    {
+        var shortUrl = await _context.ShortenedUrls
+            .AsNoTracking()
+            .SingleOrDefaultAsync(url => url.Id == id);
+
+        if (shortUrl is null) {
+            return null;
+        }
+
+        _context.ShortenedUrls.Remove(shortUrl);
+        await _context.SaveChangesAsync();
+        return shortUrl;
+    }
+
     public async Task<ShortenedUrl?> GetByKeyAsync(string key)
     {
         var shortUrl = await _context.ShortenedUrls
