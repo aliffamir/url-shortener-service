@@ -15,8 +15,13 @@ public class CreateShortUrlHandler
     }
 
     // TODO: refactor using Result pattern
-    public async Task<ShortenedUrl> HandleAsync(CreateShortUrlRequest shortUrlRequest)
+    public async Task<ShortenedUrl?> HandleAsync(CreateShortUrlRequest shortUrlRequest)
     {
+        var expiresAtUtc = shortUrlRequest.ExpiresAt.UtcDateTime;
+        if (expiresAtUtc <= DateTime.UtcNow) {
+            return null;
+        }
+
         var shortKey = UrlShortenerHelper.GenerateShortKey(shortUrlRequest.LongUrl);
         string shortUrl = $"{shortUrlRequest.Domain}/{shortKey}";
 
@@ -25,8 +30,7 @@ public class CreateShortUrlHandler
             LongUrl = shortUrlRequest.LongUrl,
             Key = shortKey,
             ShortUrl = shortUrl,
-            // TODO: accept expiry
-            ExpiresAt = DateTime.UtcNow.AddYears(1)
+            ExpiresAt = expiresAtUtc,
         };
 
         await _shortUrlRepository.CreateAsync(shortUrlEntity);
